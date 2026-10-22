@@ -1,0 +1,24 @@
+# Requirement Traceability Matrix (RTM) — DocuMind AI
+
+Matriks ini memastikan setiap requirement memiliki keterlacakan penuh dari kebutuhan pengguna (*User Story*) hingga kriteria penerimaan (*Acceptance Criteria*) dan kasus uji otomatis (*Test Case ID*).
+
+| Requirement ID | Prioritas | User Story | Acceptance Criteria Utama | Test Case ID | Metode & Alat Verifikasi |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **FR-AUTH-001** | P0 | US-01 | Registrasi & login valid menerbitkan sesi JWT; `GET /api/v1/auth/me` mengembalikan HTTP `200`. | `TC-AUTH-001`, `TC-E2E-001` | API Integration (Supertest), E2E (Playwright) |
+| **FR-AUTH-002** | P0 | US-01 | Request tanpa JWT atau dengan JWT kedaluwarsa ke endpoint privat ditolak HTTP `401`; logout menghapus sesi dan mengalihkan ke `/login`. | `TC-AUTH-002`, `TC-E2E-001` | API Integration (Supertest), E2E (Playwright) |
+| **FR-DOC-001** | P0 | US-02 | Upload PDF valid (<= 10 MB, header `%PDF-`) menghasilkan HTTP `201`; file non-PDF ditolak `400`; file > 10 MB ditolak `413`. | `TC-DOC-001`, `TC-DOC-002`, `TC-DOC-003` | Unit (Vitest), API Integration (Supertest) |
+| **FR-DOC-002** | P0 | US-02, US-03 | `GET /api/v1/documents` hanya mengembalikan dokumen milik `user_id` pemanggil beserta status dan metadatanya. | `TC-DOC-004`, `TC-E2E-002` | API Integration (Supertest), E2E (Playwright) |
+| **FR-DOC-003** | P0 | US-03, US-08 | `DELETE /api/v1/documents/:id` menghapus objek di Supabase Storage serta seluruh baris terkait di `documents`, `document_chunks`, `conversations`, `messages`, dan `message_sources`. | `TC-DOC-005`, `TC-E2E-003` | API & DB Integration (Supertest), E2E (Playwright) |
+| **FR-PROC-001** | P0 | US-02 | Ekstraksi teks dilakukan per halaman (`1..N`); PDF > 50 halaman ditandai `failed` (`PAGE_LIMIT_EXCEEDED`); PDF dengan teks < 50 karakter ditandai `failed` (`EMPTY_EXTRACTED_TEXT`). | `TC-PROC-001`, `TC-PROC-002`, `TC-PROC-003` | Unit Test (Vitest) |
+| **FR-PROC-002** | P0 | US-02, US-05 | Setiap chunk memiliki `page_number >= 1` akurat, panjang <= 1.000 karakter, dan `chunk_index` sekuensial unik per dokumen. | `TC-PROC-004` | Unit Test (Vitest) |
+| **FR-PROC-003** | P0 | US-02, US-04 | Seluruh chunks disimpan dengan `embedding vector(768)` dalam transaksi atomik; kegagalan batch embedding melakukan *rollback* penuh (0 partial chunks). | `TC-PROC-005`, `TC-PROC-006` | Unit & DB Test (Vitest) |
+| **FR-PROC-004** | P0 | US-08 | `POST /api/v1/documents/:id/retry` pada dokumen `failed` mereset state error dan memulai ulang pemrosesan (`202 Accepted`); ditolak `400` jika dokumen sudah `ready`. | `TC-PROC-007` | API Integration (Supertest) |
+| **FR-RAG-001** | P0 | US-04 | Query `pgvector` hanya mengambil maksimal 5 chunks dengan `similarity >= 0.55` yang cocok dengan `document_id` dan `user_id` pemanggil. | `TC-RAG-001`, `TC-SEC-002` | DB Integration (Vitest) |
+| **FR-RAG-002** | P0 | US-04, US-06 | Jawaban didasarkan pada chunks hasil retrieval; jika 0 chunk relevan atau bukti tidak cukup, sistem mengembalikan `isAbstention: true` dan `sources: []`. | `TC-RAG-002`, `TC-RAG-003`, `TC-EVAL-001` | Unit/API (Vitest), RAG Eval CLI |
+| **FR-RAG-003** | P0 | US-07 | Sesi percakapan dan urutan pesan (`user` & `assistant`) beserta sitasinya tersimpan di DB dan bertahan saat halaman di-refresh. | `TC-RAG-004`, `TC-E2E-003` | API Integration (Supertest), E2E (Playwright) |
+| **FR-CIT-001** | P0 | US-05 | Indeks sitasi LLM divalidasi terhadap rentang `[1..K]`; indeks tidak valid dibuang; nomor halaman & snippet diambil deterministik dari DB; klik sitasi membuka *Source Inspector*. | `TC-CIT-001`, `TC-CIT-002`, `TC-E2E-003` | Unit (Vitest), E2E (Playwright) |
+| **FR-SEC-001** | P0 | US-01 | Percobaan User B untuk membaca, menanyakan, me-retry, atau menghapus dokumen/percakapan milik User A selalu ditolak dengan HTTP `404 Not Found`. | `TC-SEC-001` | Security API Suite (Supertest) |
+| **FR-SEC-002** | P0 | US-04, US-05 | Tag delimiter `<document_context>` di-escape dari input PDF; payload `<script>` di dalam PDF atau chat tidak dieksekusi di browser. | `TC-SEC-003`, `TC-SEC-004` | Unit & Component Test (Vitest) |
+| **FR-OPS-001** | P0 | US-02, US-04 | Rate limiter menolak request chat ke-16/menit dan upload ke-6/10 menit dengan HTTP `429`; seluruh error API mengikuti skema JSON standar tanpa *stack trace*. | `TC-OPS-001`, `TC-OPS-002` | API Integration (Supertest) |
+| **FR-OPS-002** | P0 | — | `GET /api/v1/health` mengembalikan `200 OK`; fungsi redaksi logger menyensor API key dan token JWT dari log. | `TC-OPS-003`, `TC-OPS-004` | Unit & API Test (Vitest, Supertest) |
+| **FR-OPS-003** | P1 | US-09 | `DELETE /api/v1/conversations/:id` menghapus percakapan beserta pesan di dalamnya milik pengguna aktif. | `TC-OPS-005` | API Integration (Supertest) |
