@@ -1,4 +1,4 @@
-# DocuMind AI 🧠📄
+# DocuMind AI
 > **Verifiable Document Intelligence with Page-Level RAG & Deterministic Citation Engine**
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -12,7 +12,7 @@
 
 ---
 
-## 📌 Ringkasan Produk (Executive Summary)
+## Ringkasan Produk (Executive Summary)
 
 **DocuMind AI** adalah platform penelaah dokumen PDF berbasis web yang mengutamakan **keterverifikasian di atas kefasihan semata (*Verifiability over Fluency*)**. Sistem ini memproses dokumen PDF teks (hingga 10 MB dan 50 halaman), mengindeksnya dengan pelestarian nomor halaman 100%, dan memungkinkan pengguna mengajukan pertanyaan dalam bahasa alami dengan jaminan:
 1. **Strict Grounding:** Jawaban hanya dirumuskan dari isi dokumen aktual.
@@ -22,7 +22,7 @@
 
 ---
 
-## 🏗️ Arsitektur Sistem
+## Arsitektur Sistem
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -55,7 +55,7 @@
 
 ---
 
-## 📁 Struktur Monorepo
+## Struktur Monorepo
 
 ```text
 docuMindAI/
@@ -94,7 +94,7 @@ docuMindAI/
 
 ---
 
-## ⚡ Memulai Pengembangan (Quick Start)
+## Memulai Pengembangan (Quick Start)
 
 ### 1. Prasyarat
 - **Node.js**: LTS (v20+ disarankan)
@@ -142,7 +142,7 @@ npm run dev:frontend  # Berjalan di http://localhost:5173
 
 ---
 
-## 🧪 Pengujian Otomatis
+## Pengujian Otomatis
 
 ```bash
 # Menjalankan seluruh test suite backend (Vitest)
@@ -157,7 +157,7 @@ npm run test:integration --workspace=backend
 
 ---
 
-## 📚 Indeks Dokumentasi Teknis
+## Indeks Dokumentasi Teknis
 
 | Dokumen | Deskripsi |
 | :--- | :--- |
@@ -171,7 +171,7 @@ npm run test:integration --workspace=backend
 
 ---
 
-## 🔒 Keamanan & Privasi
+## Keamanan & Privasi
 - **Zero Trust**: User ID selalu diverifikasi dari Bearer JWT Supabase pada setiap request.
 - **Strict Data Isolation**: Seluruh query data dan pencarian vektor membatasi lingkup pada `user_id` pemilik.
 - **Redaksi Rahasia**: Logger Pino otomatis menyensor token JWT, API keys, dan header sensitif.
