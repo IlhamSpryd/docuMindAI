@@ -41,6 +41,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setIsLoading(false);
       return;
     }
+
+    // Demo account mode (offline / UI preview support)
+    if (token.startsWith('mock-test-token-')) {
+      const demoUser: UserProfile = user || {
+        id: '00000000-0000-0000-0000-000000000001',
+        email: 'reviewer@documind.ai',
+      };
+      const demoQuota: QuotaInfo = quota || {
+        maxDocuments: 5,
+        usedDocuments: 2,
+        remainingDocuments: 3,
+      };
+      setUser(demoUser);
+      setQuota(demoQuota);
+      localStorage.setItem('documind_user', JSON.stringify(demoUser));
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const res = await api.getMe();
       setUser(res.user);
@@ -72,6 +91,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       email: 'reviewer@documind.ai',
     };
     login(demoToken, demoUser);
+    setQuota({
+      maxDocuments: 5,
+      usedDocuments: 2,
+      remainingDocuments: 3,
+    });
   };
 
   const logout = () => {

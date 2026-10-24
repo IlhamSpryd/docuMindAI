@@ -1,10 +1,13 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { AppShell } from './components/AppShell';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { UploadPage } from './pages/UploadPage';
+import { HistoryPage } from './pages/HistoryPage';
 import { DocumentWorkspacePage } from './pages/DocumentWorkspacePage';
 
 const queryClient = new QueryClient({
@@ -21,8 +24,8 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
+      <div className="grid min-h-dvh place-items-center">
+        <div className="size-8 animate-spin rounded-full border-2 border-foreground border-t-transparent" />
       </div>
     );
   }
@@ -34,6 +37,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return <>{children}</>;
 };
 
+const DocumentRedirect: React.FC = () => {
+  const { id } = useParams();
+  return <Navigate to={`/doc/${id}`} replace />;
+};
+
 export const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
@@ -42,27 +50,24 @@ export const App: React.FC = () => {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/sign-in" element={<Navigate to="/login" replace />} />
 
             <Route
-              path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <DashboardPage />
+                  <AppShell />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<DashboardPage />} />
+              <Route path="dashboard" element={<Navigate to="/" replace />} />
+              <Route path="upload" element={<UploadPage />} />
+              <Route path="history" element={<HistoryPage />} />
+              <Route path="doc/:id" element={<DocumentWorkspacePage />} />
+              <Route path="documents/:id" element={<DocumentRedirect />} />
+            </Route>
 
-            <Route
-              path="/documents/:id"
-              element={
-                <ProtectedRoute>
-                  <DocumentWorkspacePage />
-                </ProtectedRoute>
-              }
-            />
-
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
