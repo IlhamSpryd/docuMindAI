@@ -179,6 +179,30 @@ npm run test:integration --workspace=backend
 
 ---
 
+## 🚀 Deployment
+
+Repository ini merupakan monorepo dengan arsitektur terpisah antara antarmuka pengguna dan server API:
+- **Frontend SPA (`frontend/`)**: Dibangun dengan Vite + React + TypeScript dan di-deploy sebagai situs statis ke **GitHub Pages**.
+- **Backend API (`backend/`)**: Node.js + Express dengan database PostgreSQL (`pgvector`), Supabase, dan Gemini API. **Backend tidak dapat di-deploy ke GitHub Pages** karena GitHub Pages hanya melayani berkas statis (HTML/CSS/JS). Backend memerlukan runtime server seperti **Render, Railway, Fly.io, DigitalOcean, atau VPS**.
+
+### Deployment Frontend ke GitHub Pages
+
+Deployment frontend diotomatisasi menggunakan GitHub Actions melalui berkas [`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
+
+#### Langkah Mengaktifkan GitHub Pages:
+1. Buka repositori Anda di GitHub: [https://github.com/IlhamSpryd/docuMindAI](https://github.com/IlhamSpryd/docuMindAI)
+2. Buka tab **Settings** > **Pages** (di sidebar kiri).
+3. Di bawah bagian **Build and deployment** > **Source**, pilih **GitHub Actions**.
+4. *(Opsional)* Konfigurasikan environment variable frontend di GitHub (**Settings** > **Secrets and variables** > **Actions** > **Variables**):
+   - `VITE_API_URL`: URL publik backend API Anda (misal `https://api-documind.onrender.com/api/v1`)
+   - `VITE_SUPABASE_URL`: URL instans Supabase Anda
+   - `VITE_SUPABASE_ANON_KEY`: Anon Key Supabase Anda
+5. Setiap kali ada `git push` ke branch `main` (atau dipicu manual lewat tab Actions), workflow akan mengompilasi frontend dan mempublikasikannya ke:
+   **[https://IlhamSpryd.github.io/docuMindAI/](https://ilhamspryd.github.io/docuMindAI/)**
+
+---
+
 ## 📄 Lisensi
 Didistribusikan di bawah lisensi MIT.
 Dikembangkan oleh **Ilham Sepriyadi**.
+

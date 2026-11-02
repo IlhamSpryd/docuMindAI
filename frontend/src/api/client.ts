@@ -54,8 +54,13 @@ async function request<T>(
       if (response.status === 401 && !token?.startsWith('mock-test-token-')) {
         localStorage.removeItem('documind_auth_token');
         localStorage.removeItem('documind_user');
-        if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/register')) {
-          window.location.href = '/login';
+        const currentLoc = window.location.hash || window.location.pathname;
+        if (!currentLoc.includes('/login') && !currentLoc.includes('/register')) {
+          if (window.location.hash) {
+            window.location.hash = '#/login';
+          } else {
+            window.location.href = `${import.meta.env.BASE_URL}#/login`;
+          }
         }
       }
 

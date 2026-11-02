@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DocuMind AI</title>
+    <script>
+      // Single Page Application routing fallback for GitHub Pages
+      // If a visitor accesses a direct path (e.g., /docuMindAI/upload or /docuMindAI/doc/123),
+      // GitHub Pages returns this 404.html. This script preserves the path and query parameters
+      // and redirects to the SPA's HashRouter route (/docuMindAI/#/upload).
+      (function () {
+        var repoName = '/docuMindAI';
+        var pathname = window.location.pathname;
+        var subPath = pathname.startsWith(repoName)
+          ? pathname.slice(repoName.length)
+          : pathname;
+
+        if (!subPath.startsWith('/')) {
+          subPath = '/' + subPath;
+        }
+
+        var redirectUrl =
+          window.location.origin +
+          repoName +
+          '/#' +
+          subPath +
+          window.location.search +
+          window.location.hash;
+
+        window.location.replace(redirectUrl);
+      })();
+    </script>
+  </head>
+  <body>
+    <div style="font-family: sans-serif; text-align: center; padding-top: 50px;">
+      <h2>Redirecting to DocuMind AI...</h2>
+      <p>If you are not redirected automatically, please <a href="/docuMindAI/">click here</a>.</p>
+    </div>
+  </body>
+</html>
